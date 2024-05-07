@@ -36,4 +36,17 @@ def cart_delete(request):
 
 
 def cart_update(request):
-    pass
+    cart = Cart(request)
+    if request.POST.get('action') == 'post':
+        product_id = int(request.POST.get('product_id'))
+        product_qty = request.POST.get('product_qty')
+        if product_qty:
+            # Convert quantity to integer if it's not empty
+            product_qty = int(product_qty)
+            cart.update(product=product_id, quantity=product_qty)
+            response = JsonResponse({'qty': product_qty})
+            return response
+        else:
+            # Handle case where product_qty is empty
+            return JsonResponse({'error': 'Product quantity is missing'}, status=400)
+
